@@ -1,0 +1,624 @@
+@import url("https://fonts.googleapis.com/css2?family=DM+Serif+Text:ital@0;1&family=Mona+Sans:ital,wght@0,200..900;1,200..900&display=swap");
+
+@import "tailwindcss";
+
+@custom-variant light (&:where(.light, .light *));
+
+@font-face {
+  font-family: "Able Lead";
+  src: url("/fonts/able-lead-demo.ttf") format("truetype");
+}
+
+:root {
+  --color-yellow: #d0ff71;
+  --color-bg-primary: #000000;
+  --color-text-primary: #ffffff;
+  --color-navbar-bg: rgba(0, 0, 0, 0.4);
+  --color-navbar-border: rgba(255, 255, 255, 0.1);
+  --color-card-bg: rgba(255, 255, 255, 0.05);
+  --color-card-border: rgba(255, 255, 255, 0.1);
+  --color-card-badge-bg: rgba(0, 0, 0, 0.6);
+  --color-overlay-bg: rgba(0, 0, 0, 0.95);
+  --color-text-gradient-start: #ffffff;
+  --color-text-gradient-end: #898989;
+  --color-cta-text: #000000;
+}
+
+.light {
+  --color-yellow: #5e67e6;
+  --color-bg-primary: #ffffff;
+  --color-text-primary: #121212;
+  --color-navbar-bg: rgba(255, 255, 255, 0.6);
+  --color-navbar-border: rgba(0, 0, 0, 0.1);
+  --color-card-bg: rgba(0, 0, 0, 0.03);
+  --color-card-border: rgba(0, 0, 0, 0.08);
+  --color-card-badge-bg: rgba(255, 255, 255, 0.75);
+  --color-overlay-bg: rgba(255, 255, 255, 0.95);
+  --color-text-gradient-start: #121212;
+  --color-text-gradient-end: #555555;
+  --color-cta-text: #ffffff;
+}
+
+@theme {
+  --color-yellow: var(--color-yellow);
+  --color-white-100: #efefef;
+  --font-sans: "Mona Sans", sans-serif;
+  --font-able-lead: "Able Lead", sans-serif;
+  --font-serif: "DM Serif Text", serif;
+}
+
+html,
+body {
+  width: 100%;
+  background-color: var(--color-bg-primary);
+  color: var(--color-text-primary);
+  scroll-behavior: smooth;
+  overflow-x: hidden;
+  transition:
+    background-color 0.5s ease,
+    color 0.5s ease;
+}
+
+@utility flex-center {
+  @apply flex justify-center items-center;
+}
+
+@utility col-center {
+  @apply flex flex-col justify-center items-center;
+}
+
+@utility abs-center {
+  @apply absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2;
+}
+
+@utility text-gradient {
+  background: linear-gradient(
+    to bottom,
+    var(--color-text-gradient-start),
+    var(--color-text-gradient-end)
+  );
+  -webkit-background-clip: text;
+  background-clip: text;
+  /* color: transparent; */
+}
+
+@utility radial-gradient {
+  background: radial-gradient(
+    circle at center,
+    #434343 0%,
+    #000 50%,
+    transparent 100%
+  );
+}
+
+@layer components {
+  /* Navbar Components */
+  .navbar-container {
+    @apply fixed top-4 inset-x-0 mx-auto gap-4 z-50 flex items-center justify-between px-5 py-2 rounded-full backdrop-blur-md shadow-2xl;
+    background-color: var(--color-navbar-bg);
+    border: 1px solid var(--color-navbar-border);
+    width: max-content;
+  }
+
+  .navbar-logo {
+    @apply font-able-lead text-2xl tracking-wide text-white cursor-pointer flex items-center;
+  }
+
+  .navbar-profile {
+    @apply w-9 h-9 rounded-full overflow-hidden transition-all duration-300 cursor-pointer shrink-0;
+  }
+
+  .navbar-profile img {
+    @apply w-full h-full object-cover contrast-110 brightness-95 transition-all duration-700 ease-out;
+  }
+
+  /* Availability Status Badge */
+  .availability-badge {
+    @apply flex items-center gap-2 overflow-hidden shrink-0;
+  }
+
+  .green-dot {
+    @apply w-2 h-2 rounded-full bg-yellow shadow-[0_0_6px_rgba(231,211,147,0.5)] shrink-0;
+    animation: pulse 2s infinite;
+  }
+
+  .availability-text {
+    @apply font-sans text-[10px] font-medium tracking-widest text-white/80 whitespace-nowrap;
+  }
+
+  /* Navigation Links & Tumble Hover Effect */
+  .nav-links-wrapper {
+    @apply hidden lg:flex items-center gap-5 shrink-0;
+  }
+
+  .nav-link-item {
+    @apply font-sans text-sm font-medium relative py-1 cursor-pointer overflow-hidden block transition-all duration-300;
+    height: 1.5rem;
+  }
+
+  .nav-link-tumble-wrapper {
+    @apply flex flex-col transition-transform duration-800 ease-out;
+  }
+
+  .nav-link-item:hover .nav-link-tumble-wrapper {
+    transform: translateY(-50%);
+  }
+
+  .nav-link-tumble-text {
+    @apply block h-6 leading-6 transition-colors duration-300 text-white/70;
+  }
+
+  .nav-link-item:hover .nav-link-tumble-text:first-child {
+    @apply text-white/30;
+  }
+
+  .nav-link-tumble-text:last-child {
+    @apply text-yellow;
+  }
+
+  /* Action buttons & mobile wrappers */
+  .nav-cta-wrapper {
+    @apply flex items-center shrink-0;
+  }
+
+  .nav-cta-btn {
+    /* Added whitespace-nowrap and shrink-0 to guard the button shape */
+    @apply font-sans text-xs font-bold uppercase tracking-wider px-5 py-1.5 rounded-full border border-yellow bg-yellow transition-all duration-300 cursor-pointer shadow-md shadow-yellow/10 whitespace-nowrap shrink-0;
+    color: var(--color-cta-text);
+  }
+
+  .nav-cta-btn:hover {
+    @apply bg-black border-yellow shadow-lg shadow-yellow/20;
+    color: var(--color-yellow);
+  }
+
+  /* Mobile Menu Drawer & Toggle */
+  .mobile-menu-btn {
+    @apply flex lg:hidden text-white hover:text-yellow focus:outline-none cursor-pointer transition-all duration-500 ease-in-out;
+  }
+
+  .mobile-menu-btn.collapsed {
+    @apply max-w-0 opacity-0 overflow-hidden pointer-events-none scale-50;
+  }
+
+  .mobile-menu-overlay {
+    @apply fixed inset-0 z-40 flex flex-col items-center justify-center backdrop-blur-lg lg:hidden transition-all duration-500;
+    background-color: var(--color-overlay-bg);
+  }
+
+  .mobile-nav-link {
+    @apply font-sans text-3xl font-semibold text-white/80 hover:text-yellow transition-colors duration-300 my-4 cursor-pointer;
+  }
+
+  /* Hero Section Components */
+  .hero-container {
+    @apply relative w-full h-screen;
+    background-color: var(--color-bg-primary);
+    transition: background-color 0.5s ease;
+    z-index: 20;
+  }
+
+  .hero-video-bg {
+    @apply absolute top-0 left-0 w-full h-full object-cover z-0 opacity-40 transition-opacity duration-500;
+  }
+
+  .hero-overlay {
+    @apply absolute inset-0 z-10 bg-gradient-to-b from-black/10 via-black/40 to-black transition-all duration-500;
+  }
+
+  /* Light Mode Overrides for Hero Background */
+  .light .hero-video-bg {
+    opacity: 0 !important;
+  }
+  .light .hero-overlay {
+    background: radial-gradient(
+      circle at center,
+      #f5f5f7 0%,
+      #e5e5ea 100%
+    ) !important;
+  }
+
+  .hero-content-wrapper {
+    @apply z-20 relative w-full mx-auto px-6 md:px-12 min-h-screen lg:h-full flex items-center justify-center pt-24 pb-16 lg:pt-28 lg:pb-16;
+  }
+
+  .hero-grid-new {
+    @apply flex flex-col w-full max-w-7xl mx-auto gap-4 md:gap-6 lg:grid lg:grid-cols-12 lg:gap-4 lg:items-center;
+  }
+
+  /* Column Shared Core Configuration */
+  .hero-left-col,
+  .hero-right-col {
+    @apply flex flex-col w-full relative;
+    @apply items-center text-center self-center;
+    @apply md:items-start md:text-left md:self-start;
+    /* Enforce exact central baseline matches on lg screens */
+    @apply lg:items-center lg:self-center lg:col-span-4;
+  }
+
+  /* Target title alignments cleanly */
+  .hero-left-col .hero-title-container {
+    @apply lg:w-full lg:text-right;
+  }
+
+  .hero-right-col .hero-title-container {
+    @apply lg:w-full lg:text-left;
+  }
+
+  /* Center column */
+  .hero-center-col {
+    @apply flex justify-center items-center py-4 lg:py-0;
+    @apply self-center lg:col-span-4;
+    perspective: 1000px;
+  }
+
+  .card-flip-slot {
+    @apply relative;
+  }
+
+  .hero-center-col.card-flip-slot:empty::before {
+    content: "";
+    @apply block w-[220px] sm:w-[240px] md:w-[280px] lg:w-[380px] aspect-[3/4];
+  }
+
+  /* Floating Labels Fix */
+  .hero-name-label {
+    @apply font-sans text-xs uppercase tracking-[0.25em] text-yellow mb-4 block font-semibold;
+    /* absolute position on desktop so it doesn't push the left h1 down */
+    @apply lg:absolute lg:bottom-full lg:right-0 lg:mb-2 whitespace-nowrap;
+  }
+  .hero-title-part {
+    @apply font-able-lead text-4xl sm:text-5xl md:text-6xl lg:text-8xl tracking-tight text-white mb-2 lg:mb-0 leading-[0.95];
+  }
+
+  .hero-subtitle {
+    @apply font-sans text-xs sm:text-sm lg:text-base text-white-100/80 max-w-xl font-light tracking-wide leading-relaxed mb-4 lg:mb-8;
+    /* absolute position on desktop so it doesn't push the right h1 up */
+    @apply lg:absolute lg:top-full lg:left-0 lg:mt-4 lg:max-w-[320px];
+  }
+
+  .light .hero-subtitle {
+    @apply text-black/60;
+  }
+
+  /* Jerome Portrait Card */
+  .image-card {
+    @apply relative w-[220px] sm:w-[240px] md:w-[280px] lg:w-[380px] aspect-[3/4];
+    transform-style: preserve-3d;
+    z-index: 30;
+  }
+
+  .image-card-inner {
+    /* Keeps image clipping tight inside the frame edges */
+    @apply w-full h-full overflow-hidden rounded-xl relative;
+    transform: translateZ(0px);
+  }
+
+  .card-tilt-shell {
+    --card-tilt-z: 0deg;
+    --card-tilt-x: 0deg;
+    @apply relative w-full h-full p-2 md:p-3 rounded-2xl shadow-2xl;
+    background-color: var(--color-card-bg);
+    border: 1px solid var(--color-card-border);
+    width: 100%;
+    height: 100%;
+    transform-style: preserve-3d;
+    transform-origin: top center;
+    transform: rotateZ(var(--card-tilt-z)) rotateX(var(--card-tilt-x))
+      rotateY(var(--card-flip-y, 0deg));
+  }
+
+  .image-card-img {
+    @apply w-full h-full object-cover contrast-110 brightness-95 transition-all duration-700 ease-out;
+  }
+
+  .image-card-badge {
+    @apply absolute bottom-4 left-4 right-4 px-4 py-3 rounded-lg flex justify-between items-center backdrop-blur-sm;
+    background-color: var(--color-card-badge-bg);
+    border: 1px solid var(--color-card-border);
+  }
+
+  .hand-wave-badge {
+    @apply absolute -bottom-6 -left-6 w-16 h-16 rounded-full bg-yellow flex items-center justify-center shadow-lg select-none z-80 border border-black/10 transition-transform duration-300 hover:scale-110;
+    /* 1. Physically pull it forward off the portrait surface */
+    transform: translateZ(50px);
+
+    /* 2. Preserve 3D context alignment */
+    transform-style: preserve-3d;
+
+    /* 3. Hide the badge completely when the parent card flips over */
+    backface-visibility: hidden;
+    -webkit-backface-visibility: hidden;
+  }
+
+  /* Waving hand animations */
+  @keyframes wave-animation {
+    0% {
+      transform: rotate(0deg);
+    }
+    10% {
+      transform: rotate(14deg);
+    }
+    20% {
+      transform: rotate(-8deg);
+    }
+    30% {
+      transform: rotate(14deg);
+    }
+    40% {
+      transform: rotate(-4deg);
+    }
+    55% {
+      transform: rotate(10deg);
+    }
+    70% {
+      transform: rotate(0deg);
+    }
+    100% {
+      transform: rotate(0deg);
+    }
+  }
+
+  .waving-hand {
+    animation: wave-animation 2.5s infinite;
+    /* Adjusted from 70% to bottom center for SVGs to articulate from the wrist */
+    transform-origin: bottom center;
+    display: inline-block;
+  }
+
+  /* 3D Double-sided Card Structure */
+  .transform-style-3d {
+    transform-style: preserve-3d;
+    position: relative;
+    width: 100%;
+    height: 100%;
+  }
+
+  .card-face-front,
+  .card-face-back {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    backface-visibility: hidden;
+    border-radius: 0.75rem;
+    overflow: hidden;
+  }
+
+  .card-face-back {
+    transform: rotateY(180deg);
+  }
+
+  /* Services Section Components */
+  .services-container,
+  .about-container {
+    @apply relative w-full min-h-screen overflow-visible py-20 flex items-center justify-center;
+    background-color: var(--color-bg-primary);
+    transition: background-color 0.5s ease;
+    z-index: 25;
+  }
+
+  .services-grid,
+  .about-grid {
+    @apply flex flex-col lg:grid lg:grid-cols-12 gap-12 lg:gap-8 items-center max-w-7xl w-full mx-auto px-6 md:px-12 z-20 relative;
+  }
+
+  .services-left,
+  .about-left {
+    @apply w-full lg:col-span-7 flex flex-col justify-center text-left;
+  }
+
+  .services-right,
+  .about-right {
+    @apply w-full lg:col-span-5 flex justify-center items-center relative py-8 lg:py-0;
+    perspective: 1000px;
+  }
+
+  .services-title,
+  .about-title {
+    @apply font-able-lead text-4xl sm:text-5xl md:text-6xl tracking-tight text-white mb-6 leading-[0.95] uppercase;
+  }
+
+  .services-subtitle,
+  .about-subtitle {
+    @apply font-sans text-xs sm:text-sm lg:text-base text-white-100/60 max-w-xl font-light tracking-wide leading-relaxed mb-8;
+  }
+
+  .light .services-subtitle,
+  .light .about-subtitle {
+    @apply text-black/60;
+  }
+
+  /* Accordion styles */
+  .accordion-item {
+    @apply border-b border-white/10 py-3 transition-colors duration-300;
+  }
+
+  .light .accordion-item {
+    @apply border-b border-black/10;
+  }
+
+  .accordion-header {
+    @apply flex justify-between items-center w-full text-left font-able-lead text-base sm:text-lg md:text-xl text-white/80 hover:text-yellow transition-colors duration-300 cursor-pointer uppercase py-2;
+  }
+
+  .accordion-content-group {
+    @apply flex items-center gap-4;
+  }
+
+  .light .accordion-header {
+    @apply text-black/80 hover:text-yellow;
+  }
+
+  .accordion-number {
+    @apply font-sans text-xs sm:text-sm text-white/50;
+  }
+
+  .accordion-header.active {
+    @apply text-yellow;
+  }
+
+  .accordion-chevron {
+    @apply w-5 h-5 text-white/50 transition-transform duration-300;
+  }
+
+  .light .accordion-chevron {
+    @apply text-black/50;
+  }
+
+  .accordion-header.active .accordion-chevron {
+    @apply text-yellow;
+  }
+
+  .accordion-content {
+    @apply max-h-0 overflow-hidden transition-all duration-500 ease-in-out;
+  }
+
+  .accordion-text {
+    @apply font-sans text-xs sm:text-sm text-white-100/60 leading-relaxed pt-2 pb-4;
+  }
+
+  .light .accordion-text {
+    @apply text-black/60;
+  }
+
+  /* Placeholder card in Services */
+  .services-card-placeholder,
+  .about-card-placeholder {
+    @apply hidden md:block w-[220px] sm:w-[240px] md:w-[280px] lg:w-[380px] aspect-[3/4] rounded-2xl border border-dashed border-white/15 bg-white/[0.01];
+  }
+
+  .services-card-placeholder:has(.image-card),
+  .about-card-placeholder:has(.image-card) {
+    @apply border-transparent bg-transparent;
+  }
+
+  .services-mobile-card {
+    @apply block md:hidden;
+  }
+
+  .services-mobile-card .card-tilt-shell {
+    --card-flip-y: 180deg;
+    --card-tilt-z: 5deg;
+    --card-tilt-x: 2deg;
+  }
+
+  .light .services-card-placeholder {
+    @apply border-black/15 bg-black/[0.01];
+  }
+
+  /* About Section Components */
+  .about-container {
+    @apply relative w-full  min-h-screen overflow-visible py-20 flex items-center justify-center;
+    background-color: var(--color-bg-primary);
+    transition: background-color 0.5s ease;
+    z-index: 25;
+  }
+
+  .about-grid {
+    @apply flex flex-col-reverse lg:grid lg:grid-cols-12 gap-12 lg:gap-8 items-center max-w-7xl w-full mx-auto px-6 md:px-12 z-20 relative;
+  }
+
+  .about-left {
+    @apply w-full lg:col-span-5 flex justify-center items-center relative py-8 lg:py-0;
+  }
+
+  .about-right {
+    @apply w-full max-w-7xl lg:col-span-7 flex flex-col justify-start items-stretch text-left;
+    perspective: 1000px;
+  }
+
+  .about-title {
+    @apply font-able-lead  text-4xl sm:text-5xl md:text-6xl tracking-tight text-white mb-6 leading-[0.95] uppercase text-left w-full block;
+  }
+
+  .about-subtitle {
+    @apply w-full max-w-7xl font-sans text-xs sm:text-sm lg:text-base text-white-100/60 font-light tracking-wide leading-relaxed mb-8 text-left block w-full grow;
+  }
+
+  .light .about-subtitle {
+    @apply text-black/60;
+  }
+
+  /* Row 1: Stats Grid Configuration */
+  .about-stats-grid {
+    @apply grid grid-cols-3 gap-4 md:gap-6 border-b border-white/10 dark:border-white/10 light:border-black/10 pb-8 mb-8 w-full;
+  }
+
+  .stat-card {
+    @apply flex flex-col items-start justify-start text-left;
+  }
+
+  .stat-number {
+    /* Yellow on Dark Theme, Blue on Light Theme */
+    @apply font-sans text-3xl sm:text-4xl md:text-5xl tracking-tight mb-1 text-yellow light:text-blue-600;
+  }
+
+  .stat-label {
+    @apply font-sans text-[11px] sm:text-xs uppercase tracking-wider text-white-100/50 light:text-black/50 font-medium leading-normal;
+  }
+
+  /* Row 2: Contact Information Grid */
+  .about-contact-grid {
+    @apply grid grid-cols-2 gap-4 border-b border-white/10 dark:border-white/10 light:border-black/10 pb-8 mb-8 w-full;
+  }
+
+  .contact-item {
+    @apply flex flex-col text-left;
+  }
+
+  .contact-label {
+    @apply font-sans text-[11px] sm:text-xs uppercase tracking-widest text-white-100/40 light:text-black/40 font-semibold mb-1;
+  }
+
+  .contact-link {
+    @apply font-sans text-sm sm:text-base text-white/90 light:text-black/90 transition-colors duration-300 hover:text-yellow light:hover:text-blue-600 font-light;
+  }
+
+  /* Row 3: Socials Panel and Layout Button Core Links */
+  .about-action-row {
+    @apply flex flex-col sm:flex-row sm:items-center justify-between gap-6 w-full pt-2;
+  }
+
+  .about-socials-wrapper {
+    @apply flex items-center gap-4;
+  }
+
+  .social-icon-link {
+    @apply text-lg text-white-100/50 light:text-black/50 transition-all duration-300 hover:text-yellow light:hover:text-blue-600 hover:scale-110;
+  }
+
+  /* Primary Story CTA Style Blocks */
+  .about-cta-btn {
+    @apply flex items-center justify-center gap-3 px-6 py-3 rounded-full border border-yellow bg-yellow text-black font-sans text-xs font-bold uppercase tracking-wider shadow-lg shadow-yellow/10 cursor-pointer transition-all duration-300 self-start sm:self-auto;
+  }
+
+  .about-cta-btn:hover {
+    @apply bg-transparent text-yellow shadow-xl shadow-yellow/20;
+  }
+
+  /* Tech Stack Section Styles */
+
+  .tech-stack-section {
+        /* Full viewport lock with flex centering coordinates */
+        @apply w-full min-h-screen flex items-center justify-center overflow-hidden relative;
+        z-index: 20;
+    }
+
+    
+
+    .tech-video-container {
+        /* Adjust the max-w scale parameter to control how big you want the orbit ring display to look */
+        @apply relative w-full max-w-[1300px] aspect-video rounded-2xl overflow-hidden px-4 md:px-0;
+    }
+
+    .tech-orbit-video {
+        @apply w-full h-full object-cover rounded-xl shadow-2xl;
+    }
+
+    .tech-video-shade {
+        /* Vignette mask that makes sure bright star fragments don't awkwardly hit hard frame borders */
+        @apply absolute inset-0 pointer-events-none rounded-xl shadow-[inset_0_0_40px_rgba(0,0,0,0.8)] bg-gradient-to-b from-black/20 via-transparent to-black/20;
+    }
+ 
+}
